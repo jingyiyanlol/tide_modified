@@ -207,7 +207,7 @@ class Plotter():
 		else:
 			cv2.imwrite(os.path.join(out_dir, '{}_{}_summary.png'.format(model_name, rec_type)), summary_im)
 
-	def custom_summary_plot(self, errors:dict, model_name:str="Model", iou_threshold:float=0.5):
+	def custom_summary_plot(self, errors:dict, model_name:str, iou_threshold:float=0.5):
 		"""
 		custom summary plot that returns a figure of the errors breakdown, 
 		first axis is of the main error types,
@@ -246,5 +246,5 @@ class Plotter():
 			axes[1].text(p.get_x() + p.get_width()/2, p.get_height() + 0.05, '{:.2f}'.format(p.get_height()),
 						ha='center', va='center', fontsize=12, color='black')
 
-		summary_fig.suptitle('Errors Breakdown for {} @{} IOU Threshold for all Classes'.format(model_name, iou_threshold), fontsize=16)
+		summary_fig.suptitle('Errors Breakdown for Model @{} IOU Threshold for all Classes'.format(iou_threshold), fontsize=16)
 		return summary_fig

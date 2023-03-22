@@ -609,7 +609,7 @@ class TIDE:
 		for run_name, run in self.runs.items():
 			self.plotter.make_summary_plot(out_dir, errors, run_name, run.mode, hbar_names=True)
 			## return custom plot 
-			return self.plotter.custom_summary_plot(errors=errors, iou_threshold=iou_threshold)
+			return self.plotter.custom_summary_plot(errors=errors, model_name=run_name, iou_threshold=iou_threshold)
 			
 
 	def get_main_errors(self):
