@@ -250,8 +250,7 @@ class Plotter():
 		error_dfs['special']['Error Type'] = error_dfs['special']['Error Type'].map(special_error_names_map)
 
 		# horizontal bar plot for main error types
-		sns.barplot(data=error_dfs['main'], x='Delta mAP', y='Error Type', ax=axes[0],
-	    			palette=self.colors_main.values())
+		sns.barplot(data=error_dfs['main'], x='Delta mAP', y='Error Type', ax=axes[0])
 		axes[0].set_title('Main Errors Breakdown')
 		axes[0].set(xlabel="Possible Increase in mAP(%) Due to Error", ylabel="Main Error Type")
 		axes[0].grid(False)
@@ -261,8 +260,7 @@ class Plotter():
 						ha='right', va='center', fontsize=12, color='black')
 		
 		# vertical bar plot for special error types
-		sns.barplot(data=error_dfs['special'], x='Error Type', y='Delta mAP', ax=axes[1],
-	      			palette=self.colors_special.values())
+		sns.barplot(data=error_dfs['special'], x='Error Type', y='Delta mAP', ax=axes[1])
 		axes[1].set_title('Special Errors Breakdown')
 		axes[1].set(xlabel="Special Error Type", ylabel="Possible Increase in mAP(%) Due to Error")
 		axes[1].grid(False)
