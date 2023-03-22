@@ -229,19 +229,43 @@ class Plotter():
 
 		summary_fig, axes = plt.subplots(1, 2, figsize = (12, 5), dpi=100)
 
+		## rename the error types names in the data frame
+		# main errors
+		main_error_names_map = {
+			"Cls": "Classification",
+			"Loc": "Localization",
+			"Both": "Classification and Localization",
+			"Dupe": "Duplicate",
+			"Bkg": "Background",
+			"Miss": "Missed",
+		}
+		error_dfs['main']['Error Type'] = error_dfs['main']['Error Type'].map(main_error_names_map)
+
+		# special errors
+		special_error_names_map = {
+			"FP": "False Positive",
+			"FN": "False Negative",
+		}
+
+		error_dfs['special']['Error Type'] = error_dfs['special']['Error Type'].map(special_error_names_map)
+
 		# horizontal bar plot for main error types
 		sns.barplot(data=error_dfs['main'], x='Delta mAP', y='Error Type', ax=axes[0],
 	    			palette=self.colors_main.values())
 		axes[0].set_title('Main Errors Breakdown')
+		axes[0].set(xlabel="Possible Increase in mAP(%) Due to Error", ylabel="Main Error Type")
+		axes[0].grid(False)
 		# add text labels to the bars (delta mAP)
 		for i, p in enumerate(axes[0].patches):
 			axes[0].text(p.get_width() + 0.05, p.get_y() + p.get_height()/2, '{:.2f}'.format(p.get_width()),
-						ha='center', va='center', fontsize=12, color='black')
+						ha='right', va='center', fontsize=12, color='black')
 		
 		# vertical bar plot for special error types
 		sns.barplot(data=error_dfs['special'], x='Error Type', y='Delta mAP', ax=axes[1],
 	      			palette=self.colors_special.values())
 		axes[1].set_title('Special Errors Breakdown')
+		axes[1].set(xlabel="Special Error Type", ylabel="Possible Increase in mAP(%) Due to Error")
+		axes[1].grid(False)
 		# add text labels to the bars 
 		for i, p in enumerate(axes[1].patches):
 			axes[1].text(p.get_x() + p.get_width()/2, p.get_height() + 0.05, '{:.2f}'.format(p.get_height()),
