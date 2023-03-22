@@ -207,3 +207,46 @@ class Plotter():
 		else:
 			cv2.imwrite(os.path.join(out_dir, '{}_{}_summary.png'.format(model_name, rec_type)), summary_im)
 
+	def custom_summary_plot(self, errors:dict, model_name:str, iou_threshold:float=0.5):
+		"""
+		custom summary plot that returns a figure of the errors breakdown, 
+		first axis is of the main error types,
+		second axis is of the special error types
+
+		Args:
+			errors (dict): dictionary of errors
+			model_name (str): name of the model
+		
+		Returns:
+			fig (matplotlib.figure.Figure): figure of the errors breakdown
+		"""
+		if model_name==None:
+			model_name = 'Model'
+
+		# get the data frame
+		error_dfs = {errtype: pd.DataFrame(data={
+			'Error Type': list(errors[errtype][model_name].keys()),
+			'Delta mAP': list(errors[errtype][model_name].values()),
+		}) for errtype in ['main', 'special']}
+
+		summary_fig, axes = plt.subplots(1, 2, figsize = (12, 5), dpi=100)
+
+		# horizontal bar plot for main error types
+		sns.barplot(data=error_dfs['main'], x='Delta mAP', y='Error Type', ax=axes[0],
+	    			palette=self.colors_main.values(), title='Main Errors Breakdown')
+		# add text labels to the bars (delta mAP)
+		for i, p in enumerate(axes[0].patches):
+			axes[0].text(p.get_width() + 0.05, p.get_y() + p.get_height()/2, '{:.2f}'.format(p.get_width()),
+						ha='center', va='center', fontsize=12, color='black')
+		
+		# vertical bar plot for special error types
+		sns.barplot(data=error_dfs['special'], x='Error Type', y='Delta mAP', ax=axes[1],
+	      			palette=self.colors_special.values(), title='Special Errors Breakdown')
+		
+		# add text labels to the bars 
+		for i, p in enumerate(axes[1].patches):
+			axes[1].text(p.get_x() + p.get_width()/2, p.get_height() + 0.05, '{:.2f}'.format(p.get_height()),
+						ha='center', va='center', fontsize=12, color='black')
+
+		summary_fig.suptitle('Errors Breakdown for {} @{} IOU Threshold for all Classes'.format(model_name, iou_threshold), fontsize=16)
+		return summary_fig
