@@ -400,7 +400,13 @@ class TIDERun:
 		self.qualifiers[qualifier.name] = new_ap_data.get_mAP()
 		return new_ap_data
 		
-
+	def get_AP_perclass(self):
+		""" Returns a dictionary of AP per class. """
+		return self.ap_data.get_AP_perclass()
+	
+	def get_mAP(self):
+		""" Returns the mean average precision. """
+		return self.ap_data.get_mAP()
 
 class TIDE:
 	"""
@@ -490,9 +496,17 @@ class TIDE:
 		# 	self.qualifiers[q.name] = q
 	
 	def summarize(self):
-		""" Summarizes the mAP values and errors for all runs in this TIDE object. Results are printed to the console. """
+		""" 
+		Summarizes the mAP values and errors for all runs in this TIDE object. 
+		Results are printed to the console. 
+		
+		Returns a dictionary of the mAP values for each run (each threshold) and mean AP of all the AP values.
+		"""
 		main_errors    = self.get_main_errors()
 		special_errors = self.get_special_errors()
+
+		APs_per_threshold = {}
+		mAP_of_all_thresholds = 0
 
 		for run_name, run in self.runs.items():
 			print('-- {} --\n'.format(run_name))
@@ -507,11 +521,17 @@ class TIDE:
 					int(thresh_runs[0].pos_thresh*100), int(thresh_runs[-1].pos_thresh*100))
 				print('{:s}: {:.2f}'.format(ap_title, sum(aps)/len(aps)))
 
+				mAP_of_all_thresholds = round(sum(aps)/len(aps), 2)
+
 				# Print AP for every threshold on a threshold run
 				P.print_table([
 					['Thresh'] + [str(int(trun.pos_thresh*100)) for trun in thresh_runs],
 					['  AP  '] + ['{:6.2f}'.format(trun.ap) for trun in thresh_runs]
 				], title=ap_title)
+
+				## save the threshold APs to the dictionary
+				for trun in thresh_runs:
+					APs_per_threshold[trun.pos_thresh] = trun.ap
 
 				# Print qualifiers for a threshold run
 				if len(self.qualifiers) > 0:
@@ -542,8 +562,6 @@ class TIDE:
 						['Name'] + list(self.qualifiers.keys()),
 						[' AP '] + ['{:6.2f}'.format(qAP) for qAP in qAPs]
 					], title='Qualifiers {}'.format(ap_title))
-			
-
 
 			print()
 			# Print the main errors
@@ -563,7 +581,9 @@ class TIDE:
 			
 			print()
 
-	def plot(self, out_dir:str=None):
+			return APs_per_threshold, mAP_of_all_thresholds
+
+	def plot(self, out_dir:str=None, iou_threshold:float=0.5):
 		"""
 		Plots a summary model for each run in this TIDE object.
 		Images will be outputted to out_dir, which will be created if it doesn't exist.
@@ -588,8 +608,9 @@ class TIDE:
 		# Do the plotting now
 		for run_name, run in self.runs.items():
 			self.plotter.make_summary_plot(out_dir, errors, run_name, run.mode, hbar_names=True)
-
-
+			## return custom plot 
+			return self.plotter.custom_summary_plot(errors=errors, iou_threshold=iou_threshold)
+			
 
 	def get_main_errors(self):
 		errors = {}
@@ -631,4 +652,8 @@ class TIDE:
 			'special': self.get_special_errors()
 		}
 
-
+	def get_runs_mAPs(self):
+		"""
+		Returns a dictionary of the mAP of each run in this TIDE object.
+		"""
+		return {run_name: run.ap for run_name, run in self.runs.items()}
