@@ -207,7 +207,7 @@ class Plotter():
 		else:
 			cv2.imwrite(os.path.join(out_dir, '{}_{}_summary.png'.format(model_name, rec_type)), summary_im)
 
-	def custom_summary_plot(self, errors:dict, model_name:str, iou_threshold:float=0.5):
+	def custom_summary_plot(self, errors:dict, model_name:str="Model", iou_threshold:float=0.5):
 		"""
 		custom summary plot that returns a figure of the errors breakdown, 
 		first axis is of the main error types,
@@ -220,8 +220,6 @@ class Plotter():
 		Returns:
 			fig (matplotlib.figure.Figure): figure of the errors breakdown
 		"""
-		if model_name==None:
-			model_name = 'Model'
 
 		# get the data frame
 		error_dfs = {errtype: pd.DataFrame(data={
