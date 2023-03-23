@@ -147,7 +147,8 @@ class ClassedAPDataObject:
 
 	def get_mAP(self) -> float:
 		aps = [x.get_ap() for x in self.objs.values() if not x.is_empty()]
-		return sum(aps) / len(aps)
+		mAP = sum(aps) / len(aps) if len(aps) > 0 else 0
+		return mAP
 	
 	def get_AP_perclass(self) -> dict:
 		return {k: v.get_ap() for k, v in self.objs.items() if not v.is_empty()}
