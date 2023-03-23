@@ -117,7 +117,7 @@ class Plotter():
 		# pie plot for error type breakdown
 		error_types = list(errors['main'][model_name].keys()) + list(errors['special'][model_name].keys())
 		error_sum = sum([e for e in errors['main'][model_name].values()])
-		error_sizes = [e / error_sum for e in errors['main'][model_name].values()] + [0, 0]
+		error_sizes = [e / error_sum for e in errors['main'][model_name].values()] + [0, 0] if error_sum > 0 else [0, 0, 0]
 		fig, ax = plt.subplots(1, 1, figsize=(11, 11), dpi=high_dpi)
 		patches, outer_text, inner_text = ax.pie(error_sizes, colors=self.colors_main.values(), labels=error_types,
 												autopct='%1.1f%%', startangle=90)
