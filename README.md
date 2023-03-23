@@ -1,4 +1,4 @@
-# A General **T**oolbox for **I**dentifying Object **D**etection **E**rrors
+# A General **T**oolbox for **I**dentifying Object **D**etection **E**rrors (Modified Slightly)
 ```
 ████████╗██╗██████╗ ███████╗
 ╚══██╔══╝██║██╔══██╗██╔════╝
@@ -16,12 +16,10 @@ Check out our ECCV 2020 short video for an explanation of what TIDE can do:
 
 # Installation
 
-TIDE is available as a python package for python 3.6+ as [tidecv](https://pypi.org/project/tidecv/). To install, simply install it with pip:
+TIDE python package for python 3.6+ as [tidecv](https://pypi.org/project/tidecv/). To install, simply install it with pip:
 ```shell
-pip3 install tidecv
+pip3 install git+https://github.com/jingyiyanlol/tide_modified#egg=tidecv
 ```
-
-The current version is v1.0.1 ([changelog](https://github.com/dbolya/tide/blob/master/CHANGELOG.md)).
 
 # Usage
 TIDE is meant as a drop-in replacement for the [COCO Evaluation toolkit](https://github.com/cocodataset/cocoapi), and getting started is easy:
@@ -32,7 +30,8 @@ from tidecv import TIDE, datasets
 tide = TIDE()
 tide.evaluate(datasets.COCO(), datasets.COCOResult('path/to/your/results/file'), mode=TIDE.BOX) # Use TIDE.MASK for masks
 tide.summarize()  # Summarize the results as tables in the console
-tide.plot()       # Show a summary figure. Specify a folder and it'll output a png to that folder.
+tide.plot()       # Show a summary figure. Specify a folder and it'll output a png to that folder. Also returns a matplotlib figure of the special errors
+mAP = tide.get_runs_mAPs()['predictions'] # Modified method that gets the mAP for a evaluation run that by default uses `pos_threshold`=0.5
 ```
 
 This prints evaluation summary tables to the console:
