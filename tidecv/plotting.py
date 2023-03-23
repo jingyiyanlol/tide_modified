@@ -227,14 +227,14 @@ class Plotter():
 			'Delta mAP': list(errors[errtype][model_name].values()),
 		}) for errtype in ['main', 'special']}
 
-		summary_fig, axes = plt.subplots(1, 2, figsize = (12, 5), dpi=100)
+		summary_fig, axes = plt.subplots(1, 2, figsize = (12, 5), dpi=300)
 
 		## rename the error types names in the data frame
 		# main errors
 		main_error_names_map = {
 			"Cls": "Classification",
 			"Loc": "Localization",
-			"Both": "Classification and Localization",
+			"Both": "Classification & Localization",
 			"Dupe": "Duplicate",
 			"Bkg": "Background",
 			"Miss": "Missed",
@@ -250,24 +250,26 @@ class Plotter():
 		error_dfs['special']['Error Type'] = error_dfs['special']['Error Type'].map(special_error_names_map)
 
 		# horizontal bar plot for main error types
-		sns.barplot(data=error_dfs['main'], x='Delta mAP', y='Error Type', ax=axes[0])
-		axes[0].set_title('Main Errors Breakdown')
-		axes[0].set(xlabel="Possible Increase in mAP(%) Due to Error", ylabel="Main Error Type")
+		sns.barplot(data=error_dfs['main'], x='Delta mAP', y='Error Type', ax=axes[0], palette="Paired")
+		axes[0].set_title('Possible Increase in mAP(%) Due to Main Errors')
+		axes[0].set(xlabel="", ylabel="Main Error Type")
+		axes[0].set_xticks(range(0, 100, 5))
 		axes[0].grid(False)
 		# add text labels to the bars (delta mAP)
 		for i, p in enumerate(axes[0].patches):
 			axes[0].text(p.get_width() + 0.05, p.get_y() + p.get_height()/2, '{:.2f}'.format(p.get_width()),
-						ha='right', va='center', fontsize=12, color='black')
+						ha='left', va='center', fontsize=12, color='black')
 		
 		# vertical bar plot for special error types
-		sns.barplot(data=error_dfs['special'], x='Error Type', y='Delta mAP', ax=axes[1])
-		axes[1].set_title('Special Errors Breakdown')
-		axes[1].set(xlabel="Special Error Type", ylabel="Possible Increase in mAP(%) Due to Error")
+		sns.barplot(data=error_dfs['special'], x='Error Type', y='Delta mAP', ax=axes[1], palette="Paired")
+		axes[1].set_title('Possible Increase in mAP(%) Due to Special Errors')
+		axes[1].set(xlabel="Special Error Type", ylabel="")
 		axes[1].grid(False)
+		axes[1].set_yticks(range(0, 100, 5))
 		# add text labels to the bars 
 		for i, p in enumerate(axes[1].patches):
 			axes[1].text(p.get_x() + p.get_width()/2, p.get_height() + 0.05, '{:.2f}'.format(p.get_height()),
-						ha='center', va='center', fontsize=12, color='black')
+						ha='center', va='bottom', fontsize=12, color='black')
 
 		summary_fig.suptitle('Errors Breakdown for Model @{} IOU Threshold for all Classes'.format(iou_threshold), fontsize=16)
 		return summary_fig
