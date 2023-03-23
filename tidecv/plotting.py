@@ -243,8 +243,8 @@ class Plotter():
 
 		# special errors
 		special_error_names_map = {
-			"FP": "False Positive",
-			"FN": "False Negative",
+			"FalsePos": "False Positive",
+			"FalseNeg": "False Negative",
 		}
 
 		error_dfs['special']['Error Type'] = error_dfs['special']['Error Type'].map(special_error_names_map)
