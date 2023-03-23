@@ -252,7 +252,7 @@ class Plotter():
 		# horizontal bar plot for main error types
 		sns.barplot(data=error_dfs['main'], x='Delta mAP', y='Error Type', ax=axes[0], palette="Paired")
 		axes[0].set_title('Possible Increase in mAP(%) Due to Main Errors')
-		axes[0].set(xlabel="", ylabel="Main Error Type")
+		axes[0].set(xlabel="", ylabel="")
 		axes[0].set_xticks(range(0, 100, 5))
 		axes[0].grid(False)
 		# add text labels to the bars (delta mAP)
@@ -263,7 +263,7 @@ class Plotter():
 		# vertical bar plot for special error types
 		sns.barplot(data=error_dfs['special'], x='Error Type', y='Delta mAP', ax=axes[1], palette="Paired")
 		axes[1].set_title('Possible Increase in mAP(%) Due to Special Errors')
-		axes[1].set(xlabel="Special Error Type", ylabel="")
+		axes[1].set(xlabel="", ylabel="")
 		axes[1].grid(False)
 		axes[1].set_yticks(range(0, 100, 5))
 		# add text labels to the bars 
